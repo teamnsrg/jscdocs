@@ -1,2 +1,10 @@
 site_name: JavaScript Catalog
+site_url: https://jsdocs.sprai.org
+site_description: Documentation of the JavaScript Catalog System
 theme: cinder
+site_author: Paul Murley
+
+pages:
+    - 'Overview' : 'index.md'
+    - 'Crawling Quickstart' : 'quickstart-crawling.md'
+    - 'Using Data' : 'using-data.md'
