@@ -1,10 +1,12 @@
-# The JavaScript Catalog  Project
+# The JavaScript Catalog Project
 
 
 ## Overview
 
 This site provides documentation of the JavaScript Catalog project run by
-members of [Security and Privacy Research at Illinois](//sprai.org).
+members of [Security and Privacy Research at Illinois](//sprai.org). The project
+conducts website crawls and collects a wide range of data, focusing on (but not
+limited to) the JavaScript executed by a webpage.
 
 Although this site is under construction, it should provide a useful overview
 for those wishing to use data or conduct crawls.
@@ -14,7 +16,6 @@ for those wishing to use data or conduct crawls.
 
 * [Using Data from Crawls](using-data.md)
 * [Getting Started with Crawling](quickstart-crawling.md)
-* [Crawling System Architecture](architecture.md)
 
 
 ## Contact
