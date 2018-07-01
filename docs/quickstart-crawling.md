@@ -1,5 +1,39 @@
 # Getting Started with Crawling
 
+There are two ways to use the JSC crawler. The first is to use our distributed
+crawling infrastructure, consisting many nodes pulling crawl tasks from a task
+queue and storing results in a centralized location. The second is to simply
+run the crawler from your own local machine. The steps to crawl sites using
+both methods are described below.
+
+---
+
+## Using the Distributed Infrastructure
+
+Our crawling system consists of many distributed crawling nodes which all
+connect to a single, central task queue to receive and execute crawling tasks.
+To conduct a crawl using our system, you must create a task file. This task
+file is a JSON file describing the parameters for one or many crawls you wish
+to execute. For further explanation on the format of this file and instructions
+on building a task file, look [here](/crawl-tasks.md). Note that the assignment of
+a unique `group_id` in your task file is important, so you can later get the results
+just for that specific group id.
+
+Once you have this task file, the next step is to add the tasks into the
+distributed task queue.  To do this, use a python script in the `devtoolCrawl`
+repository called `scheduler.py`. It will parse your task file, check it for
+errors, decompose it into all of the individual crawl tasks, and add them to
+our crawl task queue for execution.
+
+To monitor the progress of your crawl, you can use the Grafana interface at
+`dragonstone.sprai.org:6500`. Here, you can observe the total tasks remaining
+in the crawl queue and the rate at which tasks are currently being completed.
+
+Once your crawl is complete, you will want to retrieve and analyze your data. See
+[using data](/using-data.md) for a guide to that.
+
+---
+
 ## Locally Driven Crawls
 
 Although the crawler is intended to be used as a client of a distributed task
@@ -100,14 +134,6 @@ By default, crawl data is stored locally in a directory called `data`. Each
 individual crawl gets its own folder, as you can find further information on the
 data format [here](/using-data.md).
 
-## Using the Distributed Infrastructure
-
-Our crawling system consists of many distributed crawling nodes which all
-connect to a single, central task queue to receive and execute crawling tasks.
-To conduct a crawl using our system, you must create a [task
-file](/crawl-tasks.md). Once you have this file, you can use
-`scheduler.py` to put your tasks in the task queue for
-processing.
 
 
 

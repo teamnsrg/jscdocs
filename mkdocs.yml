@@ -4,9 +4,11 @@ site_description: Documentation of the JavaScript Catalog System
 theme: cinder
 site_author: Paul Murley
 
+markdown_extensions:
+    - codehilite
+
 pages:
     - 'Overview' : 'index.md'
     - 'Using Data' : 'using-data.md'
     - 'Crawling Quickstart' : 'quickstart-crawling.md'
-    - 'System Architecutre' : 'architecture.md'
     - 'Crawl Tasks' : 'crawl-tasks.md'

@@ -16,7 +16,6 @@ for those wishing to use data or conduct crawls.
 
 * [Using Data from Crawls](using-data.md)
 * [Getting Started with Crawling](quickstart-crawling.md)
-* [System Architecture](architecture.md)
 
 
 ## Contact

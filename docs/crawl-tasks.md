@@ -74,7 +74,7 @@ using a full, graphical browser and a timeout of 60 seconds. The second crawls
 _microsoft.com_ eight different times, using every possible combination of the
 specified values of `prefix`, `headless`, and `interactive`.
 
-```
+``` json
 {
     "tasks" : [
         {
