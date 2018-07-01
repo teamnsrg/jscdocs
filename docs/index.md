@@ -11,11 +11,17 @@ limited to) the JavaScript executed by a webpage.
 Although this site is under construction, it should provide a useful overview
 for those wishing to use data or conduct crawls.
 
+---
+
+**Last Update: 1 July 2018**
+
+---
 
 ## Quick Links
 
-* [Using Data from Crawls](using-data.md)
-* [Getting Started with Crawling](quickstart-crawling.md)
+* [Getting Started with Crawling](/quickstart-crawling.md)
+* [Building a Task File](/crawl-tasks.md)
+* [Using Data from Crawls](/using-data.md)
 
 
 ## Contact

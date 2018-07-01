@@ -10,6 +10,8 @@ both methods are described below.
 
 ## Using the Distributed Infrastructure
 
+### Build a task file
+
 Our crawling system consists of many distributed crawling nodes which all
 connect to a single, central task queue to receive and execute crawling tasks.
 To conduct a crawl using our system, you must create a task file. This task
@@ -19,15 +21,21 @@ on building a task file, look [here](/crawl-tasks.md). Note that the assignment 
 a unique `group_id` in your task file is important, so you can later get the results
 just for that specific group id.
 
+### Add tasks to queue
+
 Once you have this task file, the next step is to add the tasks into the
 distributed task queue.  To do this, use a python script in the `devtoolCrawl`
 repository called `scheduler.py`. It will parse your task file, check it for
 errors, decompose it into all of the individual crawl tasks, and add them to
 our crawl task queue for execution.
 
+### Monitor Crawl Progress
+
 To monitor the progress of your crawl, you can use the Grafana interface at
 `dragonstone.sprai.org:6500`. Here, you can observe the total tasks remaining
 in the crawl queue and the rate at which tasks are currently being completed.
+
+### Retrieve Data
 
 Once your crawl is complete, you will want to retrieve and analyze your data. See
 [using data](/using-data.md) for a guide to that.

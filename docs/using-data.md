@@ -107,11 +107,7 @@ This table contains a row for each event listener found during a crawl.
 +----------------+------------------+------+-----+---------+-------+
 ```
 
-
-
-
-
-## Files
+## JSON Results Files
 
 While this database provides easier/faster access, it *does not yet* contain all
 data gathered by the crawl. The full crawl data for each page crawled is stored
