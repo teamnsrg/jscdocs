@@ -7,8 +7,7 @@ queue, it is possible to drive the crawler locally and complete crawling tasks
 without relying on a task queue. Below are the steps to get started with
 locally-driven crawling.
 
-
-#### 1a. (optional) Get the instrumented version of Chromium
+### 1a. (optional) Get the instrumented version of Chromium
 
 You can skip this step if getting the JavaScript traces is not important to you,
 as the crawler will work with any recent version of Chrome or Chromium.
@@ -17,12 +16,15 @@ A copy of the instrumented version of Chromium is available on the NSRG NFS
 drive at `/data3/instrumented_chrome`. You'll need the whole folder
 (approximately 3GB).
 
-#### 1b. Install dependencies for instrumented Chrome
+*Note: Currently, the only version of instrumented Chromium is for 64-bit Linux.
+If you have a need to run the instrumented version on OS X, please let us know.*
 
-This step is easy. Inside the `instrumented_chrome` directory, you will find a
-script called `install-deps.sh`. Run it as root.
+### 1b. (optional) Install dependencies for instrumented Chrome
 
-#### 2. Get the crawler repository
+This step is easy. Inside the `instrumented_chrome` directory you just copied,
+you will find a script called `install-deps.sh`. Run it as root.
+
+### 2. Get the crawler repository
 
 The crawler repository is located at https://github.com/teamnsrg/devtoolCrawl.
 Clone the repository onto a machine running OS X or Linux (tested on Ubuntu
@@ -30,7 +32,7 @@ Clone the repository onto a machine running OS X or Linux (tested on Ubuntu
 know](mailto:pmurley2@illinois.edu). 
 
 
-#### 3. Install crawler dependencies
+### 3. Install crawler dependencies
 
 The crawler is written in Python3, so we recommend you [use a virtual environment](https://docs.python.org/3/library/venv.html)
 to install all the dependencies and run the crawler. The `requirements.txt` file
@@ -40,7 +42,7 @@ are inside your virtual environment, just type:
 pip3 install -r requirements.txt
 ```
 
-#### 4. Use `localdriver.py` to crawl some things!
+### 4. Use `localdriver.py` to crawl some things!
 
 `localdriver.py` acts as a wrapper around the main crawling code in `crawler.py`
 and allows you to provide parameters for crawls locally and store the results
@@ -48,9 +50,13 @@ locally or on a remote server. You can crawl a single site (`-s`) or read a file
 containing a list of many sites to crawl (`-f`). Below is the complete help for
 `localdriver.py`.
 
+For a local crawl, use should use `-o local` to store results locally. You can set
+the output path for results with `-d /Users/myuser/crawl_output`.
+
+
 ```
 usage: localdriver.py [-h] [-s SITE] [-f SITEFILE] [-b BINARY] [-w WORKERS]
-                      [-t TIMEOUT] [-g] [-p PREFIX] [-o OUTPUT_MODE]
+                      [-t TIMEOUT] [-g] [-i] [-p PREFIX] [-o OUTPUT_MODE]
                       [-d OUTPUT_PATH]
 
 Local driver for the js_crawler
@@ -69,6 +75,7 @@ optional arguments:
                         Timeout in seconds for each site
   -g, --graphical       Crawl with full, graphical browser (requires window
                         manager)
+  -i, --interactive     Crawl with interactive mode, simulating user inputs
   -p PREFIX, --prefix PREFIX
                         Protocol prefix to use for crawls. It should probably
                         be either "http://" or "https://".
@@ -82,7 +89,33 @@ optional arguments:
                         user@web.server.org:/data/storage/crawl_data)
 ```
 
+Note that the instrumented binary is located at `instrumented_chrome/chrome`.
+The path to it must be passed to `localdriver.py` using the `-b` option, or the
+default chromium/chrome installed on the system will be used.
 
-## Scheduling Crawls Via the Celery and RabbitMQ
 
-TODO
+### 5. Retrieve your data
+
+By default, crawl data is stored locally in a directory called `data`. Each
+individual crawl gets its own folder, as you can find further information on the
+data format [here](/using-data.md).
+
+## Using the Distributed Infrastructure
+
+Our crawling system consists of many distributed crawling nodes which all
+connect to a single, central task queue to receive and execute crawling tasks.
+To conduct a crawl using our system, you must create a [task
+file](/crawl-tasks.md). Once you have this file, you can use
+`scheduler.py` to put your tasks in the task queue for
+processing.
+
+
+
+
+
+
+
+
+For instructions on accessing and analyzing the results of your crawl,
+see [Using Data](/using-data.md).
+

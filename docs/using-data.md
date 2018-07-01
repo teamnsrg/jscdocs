@@ -1,9 +1,122 @@
 # Using Crawl Data
 
-Currently, crawl data is stored on the NSRG NFS drive, in a folder
-located at `/data3/js_traces`. This directory contains _many_ folders, each named
-as follows `/data3/js_traces/<url>-<12 Digit Crawl ID>/`. Each directory,
-corresponding to a single crawl, contains the following files:
+Currently, crawl data is available in two formats: SQL and JSON.
+
+## MySQL
+
+The easiest way to analyze crawl data collected using the full, distributed
+architecture is to use the MySQL server available at
+`dragonstone.sprai.org:3306`. There are two databases here, one for development
+(`dev_js_crawls`) and one for production (`js_crawls`). Within each database,
+there are four tables: `metadata`, `resources`, `scripts`, and `listeners`. The
+schema for these tables are shown below. 
+
+### The `metadata` Table
+
+```
++-------------------------------+------------------+------+-----+---------+----------------+
+| Field                         | Type             | Null | Key | Default | Extra          |
++-------------------------------+------------------+------+-----+---------+----------------+
+| crawl_id                      | int(10) unsigned | NO   | PRI | NULL    | auto_increment |
+| group_id                      | varchar(50)      | NO   |     | NULL    |                |
+| timestamp                     | datetime         | YES  |     | NULL    |                |
+| host                          | varchar(50)      | YES  |     | NULL    |                |
+| url                           | varchar(200)     | NO   |     | NULL    |                |
+| prefix                        | varchar(20)      | NO   |     | NULL    |                |
+| headless                      | tinyint(1)       | YES  |     | NULL    |                |
+| devtools_connect              | tinyint(1)       | YES  |     | NULL    |                |
+| interactive                   | tinyint(1)       | YES  |     | NULL    |                |
+| timeout_used                  | int(10) unsigned | YES  |     | NULL    |                |
+| num_resources                 | int(10) unsigned | YES  |     | NULL    |                |
+| num_scripts                   | int(10) unsigned | YES  |     | NULL    |                |
+| num_cookies                   | int(10) unsigned | YES  |     | NULL    |                |
+| num_dom_nodes                 | int(10) unsigned | YES  |     | NULL    |                |
+| num_event_listeners           | int(10) unsigned | YES  |     | NULL    |                |
+| num_unique_event_listeners    | int(10) unsigned | YES  |     | NULL    |                |
+| num_attempted_event_listeners | int(10) unsigned | YES  |     | NULL    |                |
+| num_triggered_event_listeners | int(10) unsigned | YES  |     | NULL    |                |
+| browser_path                  | varchar(200)     | YES  |     | NULL    |                |
+| browser_md5                   | char(32)         | YES  |     | NULL    |                |
+| browser_version               | varchar(50)      | YES  |     | NULL    |                |
+| v8_version                    | varchar(50)      | YES  |     | NULL    |                |
+| user_agent                    | varchar(500)     | YES  |     | NULL    |                |
+| load_event_fired              | tinyint(1)       | YES  |     | 0       |                |
+| tt_first_load_event           | float            | YES  |     | NULL    |                |
+| tt_nav_complete               | float            | YES  |     | NULL    |                |
+| tt_browser_close              | float            | YES  |     | NULL    |                |
+| tt_interact_complete          | float            | YES  |     | NULL    |                |
+| tt_finish_success             | float            | YES  |     | NULL    |                |
+| coverage_success              | tinyint(1)       | YES  |     | NULL    |                |
+| coverage_total_bytes          | int(10) unsigned | YES  |     | NULL    |                |
+| coverage_covered_bytes        | int(10) unsigned | YES  |     | NULL    |                |
+| coverage_percent_coverage     | float            | YES  |     | NULL    |                |
+| git_commit_sha                | char(40)         | YES  |     | NULL    |                |
++-------------------------------+------------------+------+-----+---------+----------------+
+```
+
+### The `resources` Table
+
+```
++----------------+------------------+------+-----+---------+-------+
+| Field          | Type             | Null | Key | Default | Extra |
++----------------+------------------+------+-----+---------+-------+
+| crawl_id       | int(10) unsigned | NO   |     | NULL    |       |
+| resource_url   | varchar(500)     | NO   |     | NULL    |       |
+| document_url   | varchar(500)     | YES  |     | NULL    |       |
+| type           | varchar(20)      | YES  |     | NULL    |       |
+| remote_ip      | varchar(16)      | YES  |     | NULL    |       |
+| remote_port    | int(10) unsigned | YES  |     | NULL    |       |
+| bytes          | int(10) unsigned | YES  |     | NULL    |       |
+| initiator_type | varchar(32)      | YES  |     | NULL    |       |
++----------------+------------------+------+-----+---------+-------+
+```
+
+### The `scripts` Table
+```
++------------------------+------------------+------+-----+---------+-------+
+| Field                  | Type             | Null | Key | Default | Extra |
++------------------------+------------------+------+-----+---------+-------+
+| crawl_id               | int(10) unsigned | NO   |     | NULL    |       |
+| script_id              | int(10) unsigned | NO   |     | NULL    |       |
+| base_url               | varchar(500)     | NO   |     | NULL    |       |
+| length                 | int(10) unsigned | YES  |     | NULL    |       |
+| hash                   | char(40)         | YES  |     | NULL    |       |
+| fuzzy_hash             | varchar(128)     | YES  |     | NULL    |       |
+| coverage_total_bytes   | int(10) unsigned | YES  |     | NULL    |       |
+| coverage_covered_bytes | int(10) unsigned | YES  |     | NULL    |       |
++------------------------+------------------+------+-----+---------+-------+
+```
+
+### The `listeners` Table
+
+This table contains a row for each event listener found during a crawl.
+
+```
++----------------+------------------+------+-----+---------+-------+
+| Field          | Type             | Null | Key | Default | Extra |
++----------------+------------------+------+-----+---------+-------+
+| crawl_id       | int(10) unsigned | NO   |     | NULL    |       |
+| script_id      | int(10) unsigned | NO   |     | NULL    |       |
+| type           | varchar(50)      | NO   |     | NULL    |       |
+| once           | tinyint(1)       | YES  |     | NULL    |       |
+| use_capture    | tinyint(1)       | YES  |     | NULL    |       |
+| line_number    | int(11)          | YES  |     | NULL    |       |
+| column_number  | int(11)          | YES  |     | NULL    |       |
+| should_trigger | tinyint(1)       | YES  |     | NULL    |       |
+| did_trigger    | tinyint(1)       | YES  |     | NULL    |       |
++----------------+------------------+------+-----+---------+-------+
+```
+
+
+
+
+
+## Files
+
+While this database provides easier/faster access, it *does not yet* contain all
+data gathered by the crawl. The full crawl data for each page crawled is stored
+in a set of JSON files, either stored locally on your computer (for local
+crawls) or, when the main architecture is in use, stored at `/data3/js_crawls`. 
 
 ### Crawl Metadata
 
@@ -53,9 +166,21 @@ the crawl and the results. It contains the following fields:
 This file contains a JSON representation of the JavaScript API call trace for
 that particular crawl. The schema for these files are below.
 
-```
-TODO
-```
+- `trace`
+    * `parsing_errors` - Number of parsing errors encountered while parsing trace
+    * `script` []
+        * `script_id` - Integer identifier for script used by Chrome
+        * `base_url` - URL the script originates from. A blank base URL
+          indicates that the script was part of the original page
+        * `execution` []
+            * `callback` - boolean
+            * `call` []
+                * `call_type` - one of `get`, `set`, `call` or `cons`
+                * `class` - Class/Namespace of the API call (ex. `V8Node`)
+                * `function` - API function called (without the class)
+                * `arg` []
+                * `ret_val` - Return value of the API call
+
 
 ---
 
